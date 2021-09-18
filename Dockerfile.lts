@@ -28,8 +28,7 @@ RUN curl https://raw.githubusercontent.com/archlinux/svntogit-packages/packages/
 
 ENV PACKAGER="Sick Codes <info at sick dot codes>" 
 
-RUN read -r RC < rc.txt \
-    sudo pacman -Syu --noconfirm \
+RUN sudo pacman -Syu --noconfirm \
     sed \
     git \
     tar \
@@ -59,8 +58,7 @@ RUN read -r RC < rc.txt \
     python-sphinx_rtd_theme \
     graphviz \
     imagemagick \
-    && export KERNEL_MAINLINE="$(curl https://www.kernel.org/feeds/kdist.xml \
-    | grep -m1 -Po '(?<=kernel.org,stable,)(.+?)(?=,20\d\d\-)')" \
+    && read -r RC < rc.txt \
     && RC="${RC:=KERNEL_MAINLINE//\-/}" \
     && echo "Building ${RC}" \
     && git clone https://aur.archlinux.org/linux-git.git \

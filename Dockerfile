@@ -79,5 +79,5 @@ RUN sudo pacman -Syu --noconfirm \
     && tee -a config <<< 'CONFIG_ANDROID_BINDER_DEVICES="binder,hwbinder,vndbinder"' \
     && tee -a config <<< 'CONFIG_SW_SYNC=y' \
     && tee -a config <<< 'CONFIG_UHID=m' \
-    && makepkg -si \
+    && makepkg -si --noconfirm --nosign \
     && yes | pacman -Scc && rm -fr /var/lib/pacman/sync/*
