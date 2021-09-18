@@ -19,7 +19,9 @@ RUN useradd arch -p arch \
 
 USER arch
 
+ARG ARCH=x86_64
 ARG CORES=
+ARG KERNEL_CONFIG=https://raw.githubusercontent.com/archlinux/svntogit-packages/packages/linux/trunk/config
 ARG RC=
 
 WORKDIR /home/arch
@@ -64,13 +66,13 @@ RUN sudo pacman -Syu --noconfirm \
     && echo "Building ${RC}" \
     && wget https://raw.githubusercontent.com/sickcodes/linux-binderash/master/linux-git/PKGBUILD \
     && sed -i -e "s/{{PKGVER}}/"${RC}"/" PKGBUILD \
-    && zcat /proc/config.gz  > config \
-    && tee -a config <<< 'CONFIG_ASHMEM=y' \
-    && tee -a config <<< 'CONFIG_ANDROID=y' \
-    && tee -a config <<< 'CONFIG_ANDROID_BINDER_IPC=y' \
-    && tee -a config <<< 'CONFIG_ANDROID_BINDERFS=y' \
-    && tee -a config <<< 'CONFIG_ANDROID_BINDER_DEVICES="binder,hwbinder,vndbinder"' \
-    && tee -a config <<< 'CONFIG_SW_SYNC=y' \
-    && tee -a config <<< 'CONFIG_UHID=m' \
+    && wget -O ./config "${KERNEL_CONFIG}" \
+    && tee -a ./config <<< 'CONFIG_ASHMEM=y' \
+    && tee -a ./config <<< 'CONFIG_ANDROID=y' \
+    && tee -a ./config <<< 'CONFIG_ANDROID_BINDER_IPC=y' \
+    && tee -a ./config <<< 'CONFIG_ANDROID_BINDERFS=y' \
+    && tee -a ./config <<< 'CONFIG_ANDROID_BINDER_DEVICES="binder,hwbinder,vndbinder"' \
+    && tee -a ./config <<< 'CONFIG_SW_SYNC=y' \
+    && tee -a ./config <<< 'CONFIG_UHID=m' \
     && makepkg -si --noconfirm --nosign \
     && yes | pacman -Scc && rm -fr /var/lib/pacman/sync/*
