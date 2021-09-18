@@ -64,7 +64,7 @@ RUN sudo pacman -Syu --noconfirm \
     && RC="${RC:=KERNEL_MAINLINE//\-/}" \
     && echo "Building ${RC}" \
     && wget https://raw.githubusercontent.com/sickcodes/linux-binderash/master/linux-git/PKGBUILD \
-    && sed -i -e "s/\{\{PKGVER\}\}/${RC}/" PKGBUILD \
+    && sed -i -e "s/{{PKGVER}}/"${RC}"/" PKGBUILD \
     && zcat /proc/config.gz  > config \
     && tee -a config <<< 'CONFIG_ASHMEM=y' \
     && tee -a config <<< 'CONFIG_ANDROID=y' \
