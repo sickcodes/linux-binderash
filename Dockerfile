@@ -26,7 +26,7 @@ WORKDIR /home/arch
 
 ENV PACKAGER="Sick Codes <info at sick dot codes>" 
 
-RUN tee -a /etc/makepkg.conf <<< "MAKEFLAGS=-j$(nproc)"
+RUN sudo tee -a /etc/makepkg.conf <<< "MAKEFLAGS=-j$(nproc)"
 
 RUN sudo pacman -Syu --noconfirm \
     sed \
