@@ -1,0 +1,19 @@
+# Modified from AGPLv3 https://github.com/zaoqi/github-actions-archlinux/blob/master/.github/workflows/ci.yml
+# Used for https://github.com/sickcodes/linux-binderash
+# License AGPL3
+name: Daily Builds of Linux-Git & Linux-LTS + Ashmem & Binder Kernel for the AUR
+
+on:
+  schedule:
+    - cron: '0 0 * * *' # runs at 00:00, each day
+
+jobs:
+  build:
+    runs-on: ubuntu-18.04 # converting into Arch
+    steps:
+    - uses: actions/checkout@v1
+    - name: Convert to Arch Linux by unpacking archlinux:base-devel
+      run: curl -L https://github.com/sickcodes/github-actions-archlinux/raw/master/install.sh | sh # undockerizes sickcodes/linux-binderash
+    - name: Compile Stock Linux Kernel for Arch Linux + ashmem & binder(fs)
+      run: |
+        echo Work in Progress
