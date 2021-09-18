@@ -26,6 +26,8 @@ WORKDIR /home/arch
 
 ENV PACKAGER="Sick Codes <info at sick dot codes>" 
 
+RUN tee -a /etc/makepkg.conf <<< "MAKEFLAGS=-j$(nproc)"
+
 RUN sudo pacman -Syu --noconfirm \
     sed \
     git \
@@ -60,17 +62,8 @@ RUN sudo pacman -Syu --noconfirm \
     | grep -m1 -Po '(?<=kernel.org,stable,)(.+?)(?=,20\d\d\-)')" \
     && RC="${RC:=KERNEL_MAINLINE//\-/}" \
     && echo "Building ${RC}" \
-    && git clone https://aur.archlinux.org/linux-git.git \
-    && cd linux-git \
-    && sed -i -e 's/\"\$pkgbase-docs\"//' PKGBUILD \
-    && sed -i -e 's/rm\ -r\ \"\$builddir\/Documentation\"//' PKGBUILD \
-    && sed -i -e 's/make\ htmldocs//' PKGBUILD \
-    && N="${CORES:-$(nproc)}" \
-    && sed -i -e 's/make\ /make\ -j'${N}'\ /g' PKGBUILD \
-    && sed -i -e 's/^pkgver\=.*/pkgver\='${RC}'/' PKGBUILD \
-    && sed -i -e 's/^pkgver\=.*/pkgver\='${RC}'/' PKGBUILD \
-    && sed -i -e s/^sha256sums/old_sha256sums/g PKGBUILD \
-    && perl -i -p -e s/old_sha256sums/sha256sums\=\(\'SKIP\'\ \'SKIP\'\)\\nold_sha256sums/g PKGBUILD \
+    && wget https://raw.githubusercontent.com/sickcodes/linux-binderash/master/linux-git/PKGBUILD \
+    && sed -i -e "s/\{\{PKGVER\}\}/${RC}/" PKGBUILD \
     && zcat /proc/config.gz  > config \
     && tee -a config <<< 'CONFIG_ASHMEM=y' \
     && tee -a config <<< 'CONFIG_ANDROID=y' \

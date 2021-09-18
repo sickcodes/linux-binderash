@@ -1,12 +1,14 @@
-# Maintainer: Jonathan Wright <jon@than.io>
+# Maintainer: Sick Codes <info at sick dot codes>
+# Contributor: Jonathan Wright <jon@than.io>
 # Contributor: Boohbah <boohbah at gmail.com>
 # Contributor: Jan Alexander Steffens (heftig) <jan.steffens@gmail.com>
 
-pkgbase=linux-git
-pkgver=5.10rc2.r81.g4ef8451b3326
+pkgbase=linux-binderash-git
+pkgver={{PKGVER}}
 pkgrel=1
-pkgdesc='Linux (Git)'
+pkgdesc='Linux (Git) plus ashmem & binderfs. No documentation builds.'
 url="https://www.kernel.org"
+_repo="https://github.com/sickcodes/linux-binderash"
 arch=(x86_64)
 license=(GPL2)
 makedepends=(
@@ -20,7 +22,7 @@ source=(
   config         # the main kernel config file
 )
 sha256sums=('SKIP'
-            'a01c8ef3463c239f868fa679006bc591b1a088274dde8c9c162440dd0547ccad')
+            'SKIP')
 
 export KBUILD_BUILD_HOST=archlinux
 export KBUILD_BUILD_USER=$pkgbase
@@ -60,7 +62,7 @@ prepare() {
 build() {
   cd $_srcname
   make all
-  make htmldocs
+  # make htmldocs
 }
 
 _package() {
@@ -136,8 +138,8 @@ _package-headers() {
     rm -r "$arch"
   done
 
-  echo "Removing documentation..."
-  rm -r "$builddir/Documentation"
+  # echo "Removing documentation..."
+  # rm -r "$builddir/Documentation"
 
   echo "Removing broken symlinks..."
   find -L "$builddir" -type l -printf 'Removing %P\n' -delete
@@ -188,7 +190,7 @@ _package-docs() {
 }
 
 
-pkgname=("$pkgbase" "$pkgbase-headers" "$pkgbase-docs")
+pkgname=("$pkgbase" "$pkgbase-headers")# "$pkgbase-docs")
 for _p in "${pkgname[@]}"; do
   eval "package_$_p() {
     $(declare -f "_package${_p#$pkgbase}")
