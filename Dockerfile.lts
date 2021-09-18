@@ -20,13 +20,16 @@ RUN useradd arch -p arch \
 USER arch
 
 ARG CORES=
-ARG RC=
 
 WORKDIR /home/arch
 
+RUN curl https://raw.githubusercontent.com/archlinux/svntogit-packages/packages/linux-lts/trunk/PKGBUILD \
+    | grep -Po '(?<=pkgver\=)(.+?)(?=$)' > rc.txt
+
 ENV PACKAGER="Sick Codes <info at sick dot codes>" 
 
-RUN sudo pacman -Syu --noconfirm \
+RUN read -r RC < rc.txt \
+    sudo pacman -Syu --noconfirm \
     sed \
     git \
     tar \
@@ -79,5 +82,5 @@ RUN sudo pacman -Syu --noconfirm \
     && tee -a config <<< 'CONFIG_ANDROID_BINDER_DEVICES="binder,hwbinder,vndbinder"' \
     && tee -a config <<< 'CONFIG_SW_SYNC=y' \
     && tee -a config <<< 'CONFIG_UHID=m' \
-    && makepkg -si \
+    && makepkg -si --noconfirm --nosign \
     && yes | pacman -Scc && rm -fr /var/lib/pacman/sync/*
