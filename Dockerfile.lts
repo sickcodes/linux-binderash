@@ -22,7 +22,7 @@ USER arch
 ARG ARCH=x86_64
 ARG CORES=
 ARG KERNEL_CONFIG=https://raw.githubusercontent.com/archlinux/svntogit-packages/packages/linux-lts/trunk/config
-# ARG RC=
+# ARG RC
 
 WORKDIR /home/arch
 
@@ -64,7 +64,7 @@ RUN sudo pacman -Syu --noconfirm \
     graphviz \
     imagemagick \
     && read -r RC < rc.txt \
-    && RC="${RC:=KERNEL_MAINLINE//\-/}" \
+    && RC="${RC:-${KERNEL_MAINLINE//\-/}}" \
     && echo "Building ${RC}" \
     && wget https://raw.githubusercontent.com/sickcodes/linux-binderash/master/linux-git/PKGBUILD \
     && sed -i -e "s/{{PKGVER}}/"${RC}"/" PKGBUILD \
